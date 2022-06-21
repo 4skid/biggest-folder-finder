@@ -1,33 +1,33 @@
-
+import java.io.File;
 import java.util.HashMap;
 
 public class SizeCalculator {
-    private static char[] multipliers = {'B', 'K', 'M', 'G', 'T', 'P', 'E'};
-    private static HashMap<Character, Integer> char2multiplier = getMultiplier();
+    private static char[] sizeMultipliers = {'B', 'K', 'M', 'G', 'T'};
+    private static HashMap<Character, Integer> char2multiplier = getMultipliers();
 
-    public static String getReadableSize(long size) {
-        for (int i = 0; i < multipliers.length; i++) {
+    public static String getHumanReadableSize(long size) {
+        for (int i = 0; i < sizeMultipliers.length; i++) {
             double value = ((double) size) / Math.pow(1024, i);
             if (value < 1024) {
-                return Math.round(value) + " " + multipliers[i] + (i > 0 ? "b" : "");
+                return Math.round(value * 100) / 100. + " " + sizeMultipliers[i] + (i > 0 ? "b" : "");
             }
         }
-        return "Very Big!";
+        return "Very big!";
     }
 
-    public static Long getFromReadableSize(String size) {
-        char sizeFactor = size.replaceAll("[\\d\\s+]+", "").charAt(0);
+    public static long getSizeFromHumanReadable(String size) {
+        char sizeFactor = size.replaceAll("[0-9\\s+]+", "").charAt(0);
         int multiplier = char2multiplier.get(sizeFactor);
-        long length = multiplier * Long.parseLong(size.replaceAll("\\D", ""));
+        long length = multiplier * Long.parseLong(size.replaceAll("[^0-9]", "")
+        );
         return length;
     }
 
-    private static HashMap<Character, Integer> getMultiplier() {
+    private static HashMap<Character, Integer> getMultipliers() {
         HashMap<Character, Integer> char2multiplier = new HashMap<>();
-        for (int i = 0; i < multipliers.length; i++) {
-            char2multiplier.put(multipliers[i], (int) Math.pow(1024, i));
+        for (int i = 0; i < sizeMultipliers.length; i++) {
+            char2multiplier.put(sizeMultipliers[i], (int) Math.pow(1024, i));
         }
         return char2multiplier;
     }
-
 }

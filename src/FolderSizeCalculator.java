@@ -18,11 +18,12 @@ public class FolderSizeCalculator extends RecursiveTask<Long> {
             node.setSize(length);
             return length;
         }
+
         long sum = 0;
         List<FolderSizeCalculator> subTasks = new LinkedList<>();
-        File[] files = folder.listFiles();
 
-        for(File file : files) {
+        File[] files = folder.listFiles();
+        for (File file : files) {
             Node child = new Node(file);
             FolderSizeCalculator task = new FolderSizeCalculator(child);
             task.fork();
@@ -30,10 +31,12 @@ public class FolderSizeCalculator extends RecursiveTask<Long> {
             node.addChild(child);
         }
 
-        for(FolderSizeCalculator task : subTasks) {
+        for (FolderSizeCalculator task : subTasks) {
             sum += task.join();
         }
+
         node.setSize(sum);
         return sum;
     }
+
 }
